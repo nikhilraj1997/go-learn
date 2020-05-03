@@ -18,6 +18,10 @@ This is a repository of me learning Go and jotting down what I am learning in a 
   - [`if` statements](#if-statements)
   - [`switch` Statements](#switch-statements)
   - [`for` statements](#for-statements)
+  - [`defer`](#defer)
+  - [`panic`](#panic)
+  - [`recover`](#recover)
+  - [Example for panic and recover](#example-for-panic-and-recover)
 
 ## Variables
 
@@ -328,7 +332,7 @@ This is a repository of me learning Go and jotting down what I am learning in a 
   - `continue` // will exit the current iteration of the loop but will execute further tests
   - `labels` // will break completely out of the loop and go to the line after the label
     - ```go
-      MYLoop:
+      MyLoop:
       for i := 1; i < 5; i++ {
         for j := 1; j < 5; j++ {
           if i * j == 3 {
@@ -340,3 +344,71 @@ This is a repository of me learning Go and jotting down what I am learning in a 
 - **looping over collections**
   - arrays, slices, maps, strings, channels
   - `for k, v := range collection {}`
+
+### `defer`
+
+- **Used to delay execution of a statement until function exits**
+- **Useful to group "open" and "close" functions together**
+  - Be careful in loops
+- **Run in LIFO order**
+- **Arguments evaluated at the time defer is executed and not at the time of called function execution**
+
+  - ```go
+      a := 22
+      defer fmt.Println(a)
+      a := 44
+
+      // OUTPUT: 22
+    ```
+
+### `panic`
+
+- **Occur when program cannot continue at all**
+  - Don't use when file can't be opened unless it is critical
+  - Use for unrecoverable events - cannot obtain TCP port for web server
+- **Function will stop executing**
+  - Deferred function will still fire
+- **If nothing handles panic program will exit**
+
+### `recover`
+
+- **Used to recover from panics**
+- **Only useful in deferred functions**
+- **Current function will not attempt to continue but higher functions in call stack will**
+
+### Example for panic and recover
+
+```go
+import (
+  "fmt"
+  "log"
+)
+
+func main() {
+  fmt.Println("start")
+  panicker()
+  fmt.Println("end")
+}
+
+func panicker() {
+  fmt.Println("about to panic")
+  defer func() {
+    if err := recover(); err != nil {
+      log.Println("Error", err)
+    }
+  }()
+  panic("something bad happened")
+  fmt.Println("done panicking")
+}
+
+// OUTPUT:
+// ./prog.go:22:3: unreachable code
+// Go vet exited.
+
+// start
+// about to panic
+// 2009/11/10 23:00:00 Error something bad happened
+// end
+
+// Program exited.
+```
