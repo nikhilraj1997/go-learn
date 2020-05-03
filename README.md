@@ -17,6 +17,7 @@ This is a repository of me learning Go and jotting down what I am learning in a 
 - [Control Flow](#control-flow)
   - [`if` statements](#if-statements)
   - [`switch` Statements](#switch-statements)
+  - [`for` statements](#for-statements)
 
 ## Variables
 
@@ -313,4 +314,29 @@ This is a repository of me learning Go and jotting down what I am learning in a 
     }
     ```
 
-- **Breaking out early available n=by using `break` keyword**
+- **Breaking out early available by using `break` keyword**
+
+### `for` statements
+
+- **Only `for` statements available for looping, no while or do statements**
+- **simple loops**
+  - `for initializer; test; incrementer {}` // Normal for loops
+  - `for test {}` // for loop working as a while loop; initialization and increment has to be handled separately
+  - `for {}` // Infinite for loop for special cases; initialization, tests and increment has to be handled separately
+- **exiting early**
+  - `break` // will completely exit the loop in which it is called
+  - `continue` // will exit the current iteration of the loop but will execute further tests
+  - `labels` // will break completely out of the loop and go to the line after the label
+    - ```go
+      MYLoop:
+      for i := 1; i < 5; i++ {
+        for j := 1; j < 5; j++ {
+          if i * j == 3 {
+            break MyLoop
+          }
+        }
+      }
+      ```
+- **looping over collections**
+  - arrays, slices, maps, strings, channels
+  - `for k, v := range collection {}`
